@@ -1,13 +1,12 @@
 'use client'
 
 import { useState, useCallback, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import HeroHeader from './HeroHeader'
 import MerkleViz from './MerkleViz'
 import ChannelSetup from './tabs/ChannelSetup'
 import LiveTicker from './tabs/LiveTicker'
 import TrustTiers from './tabs/TrustTiers'
-import Settlement from './tabs/Settlement'
 import MerchantPanel from './tabs/MerchantPanel'
 import { useTicker } from '@/hooks/useTicker'
 import { useChannel, type LiveChannelData } from '@/hooks/useChannel'
@@ -16,7 +15,7 @@ import { useUSDFCBalance } from '@/hooks/useUSDFCBalance'
 import WalletGate from './WalletGate'
 
 type Role = 'payer' | 'merchant'
-type PayerTab = 'a' | 'b' | 'c' | 'd'
+type PayerTab = 'a' | 'b' | 'c'
 type TrustWindow = 30 | 60 | 300
 
 type DemoState = {
@@ -31,15 +30,12 @@ const PAYER_TABS: { id: PayerTab; label: string; short: string }[] = [
   { id: 'a', label: 'Channel Setup', short: 'A' },
   { id: 'b', label: 'Live Ticker', short: 'B' },
   { id: 'c', label: 'Trust Tiers', short: 'C' },
-  { id: 'd', label: 'Settlement', short: 'D' },
 ]
 
 export default function DemoApp() {
   const [gateCleared, setGateCleared] = useState(false)
   const [role, setRole] = useState<Role>('payer')
   const [activeTab, setActiveTab] = useState<PayerTab>('a')
-  const [animateProof, setAnimateProof] = useState(false)
-  const [settlementToast, setSettlementToast] = useState(false)
 
   const [state, setState] = useState<DemoState>({
     mode: 'simulated',
@@ -91,13 +87,7 @@ export default function DemoApp() {
     setState(s => ({ ...s, mode: 'live', channelActive: true }))
   }, [setLiveChannelData])
 
-  const handleSettle = useCallback(() => {
-    setState(s => ({ ...s, settled: true }))
-    setSettlementToast(true)
-    setTimeout(() => setSettlementToast(false), 5000)
-  }, [])
-
-  const handleSelectTier = useCallback((tier: TrustWindow) => {
+const handleSelectTier = useCallback((tier: TrustWindow) => {
     setState(s => ({ ...s, trustWindow: tier }))
   }, [])
 
@@ -195,19 +185,6 @@ export default function DemoApp() {
   // ── Payer layout ─────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-[#0A0B0D] relative">
-      <AnimatePresence>
-        {settlementToast && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="fixed top-4 left-1/2 -translate-x-1/2 z-50 font-mono text-sm px-5 py-3 rounded-sm border border-[#00E5A0] bg-[#0A0B0D] text-[#00E5A0] shadow-lg"
-            style={{ boxShadow: '0 0 32px rgba(0,229,160,0.2)' }}
-          >
-            Channel settled. {filEarned} USDFC transferred to merchant.
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       <div className="max-w-[1400px] mx-auto px-6 py-6">
         <div className="flex gap-6 min-h-screen">
@@ -224,7 +201,7 @@ export default function DemoApp() {
               <MerkleViz
                 leafIndex={leafIndex}
                 channelActive={state.channelActive}
-                animateProof={animateProof}
+                animateProof={false}
                 settled={state.settled}
               />
               <div className="flex items-center gap-4 pt-1">
@@ -320,22 +297,6 @@ export default function DemoApp() {
                 />
               </div>
 
-              <div className={activeTab === 'd' ? '' : 'hidden'}>
-                <Settlement
-                  leafIndex={leafIndex}
-                  settled={state.settled}
-                  mode={state.mode}
-                  payer={channelParams.payer}
-                  merchant={channelParams.merchant}
-                  lockedAmount={channelParams.lockedAmount}
-                  valuePerLeaf={channelParams.valuePerLeaf}
-                  signer={wallet.signer}
-                  getProofForLeaf={getProofForLeaf}
-                  getSecretForLeaf={getSecretForLeaf}
-                  onSettle={handleSettle}
-                  onAnimateProof={setAnimateProof}
-                />
-              </div>
             </div>
           </div>
         </div>
