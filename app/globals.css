@@ -1,0 +1,134 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #0A0B0D;
+  --emerald: #00E5A0;
+  --coral: #FF6B35;
+  --text-primary: #E8E6DF;
+  --text-muted: #6B6A65;
+  --border: rgba(255,255,255,0.08);
+  --card-bg: rgba(255,255,255,0.03);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  background-color: var(--bg);
+  color: var(--text-primary);
+  font-family: 'DM Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* Utility classes */
+.font-mono {
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.font-display {
+  font-family: 'Syne', sans-serif;
+}
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.btn-primary {
+  background: transparent;
+  border: 1px solid var(--emerald);
+  color: var(--emerald);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.75rem;
+  padding: 0.5rem 1.25rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  letter-spacing: 0.05em;
+}
+.btn-primary:hover {
+  background: rgba(0, 229, 160, 0.08);
+  box-shadow: 0 0 16px rgba(0, 229, 160, 0.2);
+}
+.btn-primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.75rem;
+  padding: 0.5rem 1.25rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  letter-spacing: 0.05em;
+}
+.btn-secondary:hover {
+  border-color: rgba(255,255,255,0.2);
+  color: var(--text-primary);
+}
+.btn-secondary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.emerald-text {
+  color: var(--emerald);
+}
+.coral-text {
+  color: var(--coral);
+}
+.muted-text {
+  color: var(--text-muted);
+}
+
+@keyframes coralFlash {
+  0% { color: var(--text-primary); }
+  20% { color: var(--coral); text-shadow: 0 0 20px rgba(255,107,53,0.9); }
+  40% { color: var(--text-primary); }
+  60% { color: var(--coral); text-shadow: 0 0 20px rgba(255,107,53,0.9); }
+  80% { color: var(--text-primary); }
+  100% { color: var(--coral); }
+}
+
+.coral-flash {
+  animation: coralFlash 0.8s ease-in-out forwards;
+}
+
+@keyframes proofPulse {
+  0% { stroke-dashoffset: 60; opacity: 0.4; }
+  50% { opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 1; }
+}
+
+@keyframes scanLine {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 32" fill="none">
+  <!-- Merkle tree icon -->
+  <rect x="55" y="3" width="10" height="10" rx="1" fill="#00E5A0"/>
+  <rect x="42" y="19" width="8" height="8" rx="1" fill="rgba(0,229,160,0.6)"/>
+  <rect x="66" y="19" width="8" height="8" rx="1" fill="rgba(0,229,160,0.6)"/>
+  <line x1="60" y1="13" x2="46" y2="19" stroke="rgba(0,229,160,0.4)" stroke-width="1"/>
+  <line x1="60" y1="13" x2="70" y2="19" stroke="rgba(0,229,160,0.4)" stroke-width="1"/>
+  <!-- Text -->
+  <text x="82" y="22" font-family="IBM Plex Mono" font-size="14" font-weight="600" fill="#E8E6DF" letter-spacing="-0.5">PAY</text>
+</svg>
