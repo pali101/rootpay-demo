@@ -12,6 +12,7 @@ import MerchantPanel from './tabs/MerchantPanel'
 import { useTicker } from '@/hooks/useTicker'
 import { useChannel, type LiveChannelData } from '@/hooks/useChannel'
 import { useWallet } from '@/hooks/useWallet'
+import { useUSDFCBalance } from '@/hooks/useUSDFCBalance'
 import WalletGate from './WalletGate'
 
 type Role = 'payer' | 'merchant'
@@ -49,6 +50,7 @@ export default function DemoApp() {
   })
 
   const wallet = useWallet()
+  const usdfc = useUSDFCBalance(wallet.signer)
   const { channelParams, treeReady, setLiveChannelData, getProofForLeaf, getSecretForLeaf } =
     useChannel(state.mode)
 
@@ -143,6 +145,11 @@ export default function DemoApp() {
                   {wallet.address.slice(0, 6)}…{wallet.address.slice(-4)}
                 </span>
               )}
+              {usdfc !== null && (
+                <span className="font-mono text-[10px] text-[#00E5A0]">
+                  {usdfc} USDFC
+                </span>
+              )}
               <button
                 onClick={() => { setGateCleared(false); setRole('payer') }}
                 className="font-mono text-[10px] text-[#6B6A65] hover:text-[#E8E6DF] transition-colors border border-[rgba(255,255,255,0.08)] rounded-sm px-2 py-1"
@@ -192,6 +199,7 @@ export default function DemoApp() {
                 chainTxs={chainTxs}
                 settled={state.settled}
                 wallet={wallet}
+                usdfc={usdfc}
               />
               <MerkleViz
                 leafIndex={leafIndex}

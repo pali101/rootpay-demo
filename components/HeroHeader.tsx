@@ -7,6 +7,7 @@ type HeroHeaderProps = {
   leafIndex: number
   chainTxs: number
   settled: boolean
+  usdfc: string | null
   wallet: {
     hasWallet: boolean
     connected: boolean
@@ -20,6 +21,7 @@ export default function HeroHeader({
   leafIndex,
   chainTxs,
   settled,
+  usdfc,
   wallet,
 }: HeroHeaderProps) {
   const { hasWallet, connected, address, connecting, connect } = wallet
@@ -55,9 +57,16 @@ export default function HeroHeader({
             </button>
           )}
           {connected && address && (
-            <span className="font-mono text-[10px] text-[#00E5A0]">
-              {address.slice(0, 6)}...{address.slice(-4)}
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-[10px] text-[#00E5A0]">
+                {address.slice(0, 6)}...{address.slice(-4)}
+              </span>
+              {usdfc !== null && (
+                <span className="font-mono text-[10px] text-[#6B6A65]">
+                  {usdfc} USDFC
+                </span>
+              )}
+            </div>
           )}
         </div>
       </div>
