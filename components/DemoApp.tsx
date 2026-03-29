@@ -167,6 +167,26 @@ export default function DemoApp() {
             getSecretForLeaf={getSecretForLeaf}
             getProofForLeaf={getProofForLeaf}
           />
+          <div className="flex items-center gap-4 pt-6">
+            <span className="font-mono text-xs text-[#3a3a36]">// source</span>
+            <a
+              href="https://github.com/pali101/rootpay-demo"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-mono text-xs text-[#4a4a45] hover:text-[#00E5A0] transition-colors duration-150"
+            >
+              demo
+            </a>
+            <span className="font-mono text-xs text-[#3a3a36]">·</span>
+            <a
+              href="https://github.com/pali101/RootPay"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-mono text-xs text-[#4a4a45] hover:text-[#00E5A0] transition-colors duration-150"
+            >
+              contract
+            </a>
+          </div>
         </div>
       </div>
     )
@@ -207,6 +227,26 @@ export default function DemoApp() {
                 animateProof={animateProof}
                 settled={state.settled}
               />
+              <div className="flex items-center gap-4 pt-1">
+                <span className="font-mono text-xs text-[#3a3a36]">// source</span>
+                <a
+                  href="https://github.com/pali101/rootpay-demo"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-mono text-xs text-[#4a4a45] hover:text-[#00E5A0] transition-colors duration-150"
+                >
+                  demo
+                </a>
+                <span className="font-mono text-xs text-[#3a3a36]">·</span>
+                <a
+                  href="https://github.com/pali101/RootPay"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-mono text-xs text-[#4a4a45] hover:text-[#00E5A0] transition-colors duration-150"
+                >
+                  contract
+                </a>
+              </div>
             </div>
           </div>
 
