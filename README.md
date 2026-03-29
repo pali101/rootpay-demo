@@ -196,7 +196,8 @@ lib/
 | Chain ID | 314159 |
 | RPC | `https://api.calibration.node.glif.io/rpc/v1` |
 | Explorer | `https://calibration.filfox.info` |
-| USDFC faucet | `https://faucet.calibration.fildev.network` |
+| FIL faucet | `https://faucet.calibnet.chainsafe-fil.io/funds.html` |
+| Get USDFC | `https://docs.secured.finance/usdfc-stablecoin/getting-started/getting-test-usdfc-on-testnet` |
 
 ---
 
