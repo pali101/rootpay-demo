@@ -2,8 +2,8 @@ import { ethers } from 'ethers'
 import { CONTRACT_ADDRESS, USDFC_ADDRESS } from './constants'
 
 const ABI = [
-  // createChannel(merchant, token, merkleRoot, amount, treeSize, merchantWithdrawAfterBlocks, payerWithdrawAfterBlocks)
-  'function createChannel(address merchant, address token, bytes32 merkleRoot, uint256 amount, uint16 treeSize, uint64 merchantWithdrawAfterBlocks, uint64 payerWithdrawAfterBlocks) payable',
+  // createChannelWithPermit — single tx, no prior approve needed
+  'function createChannelWithPermit(address payer, address merchant, address token, bytes32 merkleRoot, uint256 amount, uint16 treeSize, uint64 merchantWithdrawAfterBlocks, uint64 payerWithdrawAfterBlocks, uint256 deadline, uint8 v, bytes32 r, bytes32 s)',
   // redeemChannel(payer, token, leafIndex, secret, proof) — msg.sender must be merchant
   'function redeemChannel(address payer, address token, uint16 leafIndex, bytes32 secret, bytes32[] calldata proof)',
   // reclaimChannel(merchant, token) — msg.sender must be payer, called after payerWithdrawAfterBlocks
@@ -14,10 +14,10 @@ const ABI = [
   'event ChannelReclaimed(address indexed payer, address indexed merchant, address token, uint64 blockNumber)',
 ]
 
-const ERC20_ABI = [
-  'function approve(address spender, uint256 amount) returns (bool)',
-  'function allowance(address owner, address spender) view returns (uint256)',
+const ERC20_PERMIT_ABI = [
+  'function name() view returns (string)',
   'function decimals() view returns (uint8)',
+  'function nonces(address owner) view returns (uint256)',
 ]
 
 const ERRORS_ABI = [
@@ -87,7 +87,7 @@ export type CreateChannelParams = {
   merchantWithdrawAfterBlocks: number
   payerWithdrawAfterBlocks: number
   tokenAmount: string // USDFC amount as human-readable string (e.g. "10")
-  onApproving?: () => void
+  onSigning?: () => void
   onSubmitting?: () => void
 }
 
@@ -103,34 +103,51 @@ export async function createChannel(
   signer: ethers.Signer
 ): Promise<CreateChannelResult> {
   try {
-    const token = new ethers.Contract(USDFC_ADDRESS, ERC20_ABI, signer)
-    const decimals: number = await token.decimals()
+    const token = new ethers.Contract(USDFC_ADDRESS, ERC20_PERMIT_ABI, signer)
+    const [decimals, tokenName] = await Promise.all([token.decimals(), token.name()])
     const amount = ethers.parseUnits(params.tokenAmount, decimals)
-
-    // Step 1: approve only if current allowance is insufficient
     const owner = await signer.getAddress()
-    const allowance: bigint = await token.allowance(owner, CONTRACT_ADDRESS)
-    if (allowance < amount) {
-      params.onApproving?.()
-      const approveTx = await token.approve(CONTRACT_ADDRESS, amount)
-      await approveTx.wait()
-    }
+    const nonce: bigint = await token.nonces(owner)
+    const deadline = Math.floor(Date.now() / 1000) + 3600 // 1 hour
 
-    // Step 2: create the channel (no native value sent)
+    // Step 1: sign permit off-chain (no gas, single wallet signature prompt)
+    params.onSigning?.()
+    const domain = {
+      name: tokenName,
+      version: '1',
+      chainId: (await signer.provider!.getNetwork()).chainId,
+      verifyingContract: USDFC_ADDRESS,
+    }
+    const types = {
+      Permit: [
+        { name: 'owner',   type: 'address' },
+        { name: 'spender', type: 'address' },
+        { name: 'value',   type: 'uint256' },
+        { name: 'nonce',   type: 'uint256' },
+        { name: 'deadline',type: 'uint256' },
+      ],
+    }
+    const permitValue = { owner, spender: CONTRACT_ADDRESS, value: amount, nonce, deadline }
+    const sig = await (signer as ethers.AbstractSigner).signTypedData(domain, types, permitValue)
+    const { v, r, s } = ethers.Signature.from(sig)
+
+    // Step 2: single on-chain tx — permit + createChannel atomically
     params.onSubmitting?.()
     const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer)
-    const tx = await contract.createChannel(
+    const tx = await contract.createChannelWithPermit(
+      owner,
       params.merchant,
       USDFC_ADDRESS,
       params.merkleRoot,
       amount,
       params.treeSize,
       params.merchantWithdrawAfterBlocks,
-      params.payerWithdrawAfterBlocks
+      params.payerWithdrawAfterBlocks,
+      deadline,
+      v, r, s
     )
     const receipt = await tx.wait()
-    const payer = await signer.getAddress()
-    return { success: true, txHash: receipt.hash, blockNumber: receipt.blockNumber, payer }
+    return { success: true, txHash: receipt.hash, blockNumber: receipt.blockNumber, payer: owner }
   } catch (e: unknown) {
     return { success: false, error: decodeContractError(e) }
   }

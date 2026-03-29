@@ -19,12 +19,12 @@ type ChannelSetupProps = {
   onCreateLive: (data: LiveChannelData) => void
 }
 
-type ProgressStep = 'idle' | 'generating' | 'erc20-approving' | 'submitting' | 'confirmed' | 'error'
+type ProgressStep = 'idle' | 'generating' | 'signing' | 'submitting' | 'confirmed' | 'error'
 
 const STEP_LABELS: Record<ProgressStep, string> = {
   idle: '',
   generating: 'Generating tree...',
-  'erc20-approving': 'Approving USDFC spend...',
+  signing: 'Sign permit in wallet (no gas)...',
   submitting: 'Creating channel...',
   confirmed: 'Confirmed ✓',
   error: 'Transaction failed — see console',
@@ -109,7 +109,6 @@ export default function ChannelSetup({
     }
 
     setErrorMsg('')
-    setProgress('erc20-approving')
 
     const result = await createChannel(
       {
@@ -119,7 +118,7 @@ export default function ChannelSetup({
         merchantWithdrawAfterBlocks: MERCHANT_WITHDRAW_BLOCKS,
         payerWithdrawAfterBlocks: PAYER_WITHDRAW_BLOCKS,
         tokenAmount: String(TOTAL_LOCKED),
-        onApproving: () => setProgress('erc20-approving'),
+        onSigning: () => setProgress('signing'),
         onSubmitting: () => setProgress('submitting'),
       },
       signer
@@ -140,7 +139,7 @@ export default function ChannelSetup({
     })
   }
 
-  const isCreating = progress === 'generating' || progress === 'erc20-approving' || progress === 'submitting'
+  const isCreating = progress === 'generating' || progress === 'signing' || progress === 'submitting'
 
   return (
     <div className="space-y-4">
