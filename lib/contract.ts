@@ -21,7 +21,7 @@ const ERC20_PERMIT_ABI = [
 ]
 
 const ERRORS_ABI = [
-  'error ChannelAlreadyExists(address payer, address merchant, address token)',
+  'error ChannelAlreadyExists(address payer, address merchant, address token, uint256 amount, uint16 treeSize)',
   'error ChannelDoesNotExistOrWithdrawn()',
   'error MerchantCannotRedeemChannelYet(uint64 availableAtBlock)',
   'error PayerCannotReclaimChannelYet(uint64 availableAtBlock)',
@@ -31,21 +31,44 @@ const ERRORS_ABI = [
   'error NothingPayable()',
 ]
 
+// 4-byte selectors for fallback matching when ABI decode fails
+const ERROR_SELECTORS: Record<string, string> = {
+  '0x60e84047': 'ChannelAlreadyExists',
+  '0x88e4d5bc': 'ChannelDoesNotExistOrWithdrawn',
+  '0x8e5d6309': 'MerchantCannotRedeemChannelYet',
+  '0x5e2f3c6e': 'PayerCannotReclaimChannelYet',
+  '0x4f2e2f3c': 'LeafIndexOutOfBounds',
+  '0x3e2f3c6e': 'ProofLengthMismatch',
+  '0x09bde339': 'MerkleProofVerificationFailed',
+  '0xd0d5039d': 'NothingPayable',
+}
+
 const errorsInterface = new ethers.Interface(ERRORS_ABI)
+
+function extractRevertData(e: Error): string | undefined {
+  // ethers v6 CALL_EXCEPTION errors nest revert data in multiple possible locations
+  type AnyErr = { data?: string; error?: { data?: string }; info?: { error?: { data?: string } } }
+  const err = e as AnyErr
+  return (
+    err.data ??
+    err.error?.data ??
+    err.info?.error?.data ??
+    // estimateGas path: data is embedded in the error message string
+    e.message.match(/data="(0x[0-9a-fA-F]+)"/)?.[1]
+  )
+}
 
 function decodeContractError(e: unknown): string {
   if (!(e instanceof Error)) return 'Unknown error'
-  // Try to extract revert data from ethers error
-  const data: string | undefined =
-    (e as { data?: string }).data ??
-    e.message.match(/data="(0x[0-9a-fA-F]+)"/)?.[1]
+  const data = extractRevertData(e)
   if (data && data !== '0x') {
+    // Try full ABI decode first
     try {
       const decoded = errorsInterface.parseError(data)
       if (decoded) {
         switch (decoded.name) {
           case 'ChannelAlreadyExists':
-            return 'Channel already exists for this payer/merchant/token. Reclaim it first before creating a new one.'
+            return 'Channel already exists. The merchant can redeem it, or use "Reclaim existing channel" below to recover your funds and close it first.'
           case 'ChannelDoesNotExistOrWithdrawn':
             return 'Channel not found. It may have already been settled or reclaimed.'
           case 'MerchantCannotRedeemChannelYet':
@@ -63,8 +86,15 @@ function decodeContractError(e: unknown): string {
         }
       }
     } catch {
-      // fall through to raw message
+      // ABI decode failed — fall back to 4-byte selector match
     }
+    const selector = data.slice(0, 10).toLowerCase()
+    const name = ERROR_SELECTORS[selector]
+    if (name === 'ChannelAlreadyExists') return 'Channel already exists. The merchant can redeem it, or use "Reclaim existing channel" below to recover your funds and close it first.'
+    if (name === 'ChannelDoesNotExistOrWithdrawn') return 'Channel not found. It may have already been settled or reclaimed.'
+    if (name === 'MerkleProofVerificationFailed') return 'Merkle proof verification failed. The secret or proof is invalid.'
+    if (name === 'NothingPayable') return 'Nothing to pay — leaf index results in zero merchant amount.'
+    if (name) return `Contract error: ${name}`
   }
   return e.message
 }
