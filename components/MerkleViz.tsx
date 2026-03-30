@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { useMemo } from 'react'
+import { TREE_SIZE } from '@/lib/constants'
 
 type MerkleVizProps = {
   leafIndex: number
@@ -90,12 +91,16 @@ export default function MerkleViz({
     proofEdges.some(([p, c]) => p === parentId && c === childId) ||
     proofEdges.some(([p, c]) => p === childId && c === parentId)
 
+  // The currently active leaf in the 8-leaf visual (0-7)
+  const currentVisualLeaf = leafIndex > 0 ? visualLeafIndex : -1
+
   const getNodeFill = (node: typeof NODES[0]) => {
     if (node.row === 0) {
       return channelActive ? '#00E5A0' : '#2a2a2a'
     }
     if (node.row === 3) {
       const leafIdx = node.id - 7
+      if (leafIdx === currentVisualLeaf) return '#00E5A0'  // current — pulsed separately
       if (leafIdx < litLeaves) return '#00E5A0'
       return '#1a1a1a'
     }
@@ -107,6 +112,7 @@ export default function MerkleViz({
     if (node.row === 0) return channelActive ? '#00E5A0' : 'rgba(255,255,255,0.15)'
     if (node.row === 3) {
       const leafIdx = node.id - 7
+      if (leafIdx === currentVisualLeaf) return '#00E5A0'
       if (leafIdx < litLeaves) return '#00E5A0'
       return 'rgba(255,255,255,0.08)'
     }
@@ -131,7 +137,7 @@ export default function MerkleViz({
           Merkle Tree Visualization
         </span>
         <span className="font-mono text-[10px] text-[#6B6A65]">
-          N=1024 (shown: depth 4)
+          N={TREE_SIZE.toLocaleString('en-US')} (shown: depth 4)
         </span>
       </div>
       <div className="card rounded-sm p-2 overflow-hidden">
@@ -193,24 +199,42 @@ export default function MerkleViz({
             const leafIdx = node.id - 7
             const isRoot = node.row === 0
             const size = isRoot ? 10 : isLeaf ? 6 : 7
+            const isCurrent = isLeaf && leafIdx === currentVisualLeaf
 
             return (
-              <motion.rect
-                key={`node-${node.id}`}
-                x={node.x - size}
-                y={node.y - size}
-                width={size * 2}
-                height={size * 2}
-                rx={isRoot ? 2 : 1}
-                fill={getNodeFill(node)}
-                stroke={getNodeStroke(node)}
-                strokeWidth={isRoot ? 1.5 : 1}
-                animate={{
-                  fill: getNodeFill(node),
-                  stroke: getNodeStroke(node),
-                }}
-                transition={{ duration: 0.25 }}
-              />
+              <g key={`node-${node.id}`}>
+                {/* Pulsing ring on current leaf */}
+                {isCurrent && (
+                  <motion.rect
+                    x={node.x - size - 4}
+                    y={node.y - size - 4}
+                    width={(size + 4) * 2}
+                    height={(size + 4) * 2}
+                    rx={2}
+                    fill="none"
+                    stroke="#00E5A0"
+                    strokeWidth={1}
+                    animate={{ opacity: [0.8, 0, 0.8], scale: [1, 1.3, 1] }}
+                    transition={{ duration: 0.9, repeat: Infinity, ease: 'easeInOut' }}
+                    style={{ originX: `${node.x}px`, originY: `${node.y}px` }}
+                  />
+                )}
+                <motion.rect
+                  x={node.x - size}
+                  y={node.y - size}
+                  width={size * 2}
+                  height={size * 2}
+                  rx={isRoot ? 2 : 1}
+                  fill={getNodeFill(node)}
+                  stroke={getNodeStroke(node)}
+                  strokeWidth={isCurrent ? 1.5 : isRoot ? 1.5 : 1}
+                  animate={{
+                    fill: getNodeFill(node),
+                    stroke: getNodeStroke(node),
+                  }}
+                  transition={{ duration: 0.25 }}
+                />
+              </g>
             )
           })}
 
@@ -236,9 +260,33 @@ export default function MerkleViz({
             fill="#6B6A65"
             fontFamily="IBM Plex Mono"
           >
-            {leafIndex > 0 ? `leaf ${leafIndex} / 1024` : '8 leaves shown · 1024 total'}
+            8 leaves shown · {TREE_SIZE.toLocaleString('en-US')} total
           </text>
         </svg>
+      </div>
+
+      {/* Off-chain payment counter */}
+      <div className="flex items-center justify-between mt-2 px-1">
+        <div className="flex items-center gap-2">
+          <motion.span
+            className="font-mono text-lg font-medium tabular-nums leading-none text-[#00E5A0]"
+            key={leafIndex}
+            animate={leafIndex > 0 ? { scale: [1.15, 1] } : {}}
+            transition={{ duration: 0.15 }}
+          >
+            {leafIndex.toLocaleString('en-US')}
+          </motion.span>
+          <span className="font-mono text-[9px] text-[#6B6A65] uppercase tracking-widest leading-tight">
+            off-chain<br />payments
+          </span>
+        </div>
+        <div className="text-right">
+          <span className="font-mono text-[10px] text-[#6B6A65]">
+            leaf{' '}
+            <span className="text-[#E8E6DF]">{leafIndex > 0 ? leafIndex : '—'}</span>
+            {' '}/ {TREE_SIZE.toLocaleString('en-US')}
+          </span>
+        </div>
       </div>
 
       {/* Legend */}

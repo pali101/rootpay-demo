@@ -19,7 +19,9 @@ type LiveTickerProps = {
   onCopyProof?: () => string | null  // returns JSON string or null if not ready
 }
 
-const SPEEDS: TickerSpeed[] = ['slow', 'normal', 'fast']
+import { TREE_SIZE } from '@/lib/constants'
+
+const SPEEDS: TickerSpeed[] = ['1x', '10x', '100x']
 
 export default function LiveTicker({
   events,
@@ -61,7 +63,7 @@ export default function LiveTicker({
           <button
             className="btn-primary px-5 py-2 text-sm"
             onClick={onStart}
-            disabled={leafIndex >= 1023}
+            disabled={leafIndex >= TREE_SIZE - 1}
           >
             ▶ Start Session
           </button>
@@ -108,7 +110,7 @@ export default function LiveTicker({
                   : 'border-[rgba(255,255,255,0.08)] text-[#6B6A65] hover:text-[#E8E6DF]'
               }`}
             >
-              {s.charAt(0).toUpperCase() + s.slice(1)}
+              {s}
             </button>
           ))}
         </div>
@@ -169,7 +171,7 @@ export default function LiveTicker({
                     {event.byteStart.toLocaleString('en-US')}–{event.byteEnd.toLocaleString('en-US')}
                   </span>
                   <span className="font-mono text-[10px] text-[#E8E6DF] w-12 text-right shrink-0 tabular-nums">
-                    {String(event.leafIndex).padStart(3, '0')}
+                    {String(event.leafIndex).padStart(4, '0')}
                   </span>
                   <span className="w-16 text-right shrink-0">
                     {event.verified ? (

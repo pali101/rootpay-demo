@@ -4,8 +4,8 @@ export const CHAIN_ID = 314159 // Filecoin Calibration testnet
 export const CHAIN_NAME = 'Filecoin Calibration'
 export const EXPLORER_URL = 'https://calibration.filfox.info/en'
 
-export const TREE_SIZE = 1024
-export const VALUE_PER_LEAF = 10 / 1024 // USDFC (10 USDFC / 1024 leaves)
+export const TREE_SIZE = 8192
+export const VALUE_PER_LEAF = 10 / 8192 // USDFC (10 USDFC / 8192 leaves)
 export const TOTAL_LOCKED = 10 // USDFC
 
 // USDFC ERC20 token (Filecoin Calibration)

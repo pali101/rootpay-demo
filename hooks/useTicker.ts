@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { DEMO_CIDS } from '@/lib/demoData'
-import { VALUE_PER_LEAF } from '@/lib/constants'
+import { VALUE_PER_LEAF, TREE_SIZE } from '@/lib/constants'
 
 export type PaymentEvent = {
   id: string
@@ -14,12 +14,12 @@ export type PaymentEvent = {
   verified: boolean
 }
 
-export type TickerSpeed = 'slow' | 'normal' | 'fast'
+export type TickerSpeed = '1x' | '10x' | '100x'
 
 const SPEED_INTERVALS: Record<TickerSpeed, [number, number]> = {
-  slow: [300, 500],
-  normal: [80, 150],
-  fast: [30, 60],
+  '1x':   [800, 1200],  // ~1 payment/sec — real-time feel
+  '10x':  [80, 120],    // ~10 payments/sec
+  '100x': [8, 12],      // ~100 payments/sec
 }
 
 function randomInRange(min: number, max: number): number {
@@ -37,7 +37,7 @@ export function useTicker(
 ) {
   const [events, setEvents] = useState<PaymentEvent[]>([])
   const [running, setRunning] = useState(false)
-  const [speed, setSpeed] = useState<TickerSpeed>('normal')
+  const [speed, setSpeed] = useState<TickerSpeed>('10x')
   const [proofsVerified, setProofsVerified] = useState(0)
   const [leafIndex, setLeafIndex] = useState(0)
 
@@ -45,7 +45,7 @@ export function useTicker(
   const proofsVerifiedRef = useRef(0)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const runningRef = useRef(false)
-  const speedRef = useRef<TickerSpeed>('normal')
+  const speedRef = useRef<TickerSpeed>('10x')
   const trustWindowRef = useRef<30 | 60 | 300>(60)
 
   // Keep refs in sync
@@ -65,7 +65,7 @@ export function useTicker(
     if (!runningRef.current) return
 
     const currentIndex = leafIndexRef.current
-    if (currentIndex >= 1023) {
+    if (currentIndex >= TREE_SIZE - 1) {
       // Max leaves reached
       runningRef.current = false
       setRunning(false)

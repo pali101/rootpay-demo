@@ -12,6 +12,7 @@ import { useTicker } from '@/hooks/useTicker'
 import { useChannel, type LiveChannelData } from '@/hooks/useChannel'
 import { useWallet } from '@/hooks/useWallet'
 import { useUSDFCBalance } from '@/hooks/useUSDFCBalance'
+import { useFilecoinGas } from '@/hooks/useFilecoinGas'
 import WalletGate from './WalletGate'
 
 type Role = 'payer' | 'merchant'
@@ -47,6 +48,7 @@ export default function DemoApp() {
 
   const wallet = useWallet()
   const usdfc = useUSDFCBalance(wallet.signer)
+  const gasPerTransfer = useFilecoinGas()
   const { channelParams, treeReady, setLiveChannelData, clearLiveSession, getProofForLeaf, getSecretForLeaf } =
     useChannel(state.mode)
 
@@ -108,7 +110,8 @@ const handleSelectTier = useCallback((tier: TrustWindow) => {
     }, null, 2)
   }, [leafIndex, channelParams.payer, getSecretForLeaf, getProofForLeaf])
 
-  const chainTxs = state.settled ? 1 : 0
+  // 1 on-chain tx when channel is created live; 0 for simulated (no real tx)
+  const chainTxs = state.mode === 'live' && state.channelActive ? 1 : 0
 
   if (!gateCleared) {
     return (
@@ -204,6 +207,7 @@ const handleSelectTier = useCallback((tier: TrustWindow) => {
                 settled={state.settled}
                 wallet={wallet}
                 usdfc={usdfc}
+                gasPerTransfer={gasPerTransfer}
               />
               <MerkleViz
                 leafIndex={leafIndex}

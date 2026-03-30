@@ -137,6 +137,7 @@ export function useChannel(mode: 'simulated' | 'live') {
   return {
     channelParams,
     treeReady,
+    liveData,
     setLiveChannelData,
     clearLiveSession,
     getProofForLeaf,
