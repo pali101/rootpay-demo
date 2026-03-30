@@ -47,7 +47,7 @@ export default function DemoApp() {
 
   const wallet = useWallet()
   const usdfc = useUSDFCBalance(wallet.signer)
-  const { channelParams, treeReady, setLiveChannelData, getProofForLeaf, getSecretForLeaf } =
+  const { channelParams, treeReady, setLiveChannelData, clearLiveSession, getProofForLeaf, getSecretForLeaf } =
     useChannel(state.mode)
 
   useEffect(() => {
@@ -271,6 +271,7 @@ const handleSelectTier = useCallback((tier: TrustWindow) => {
                   walletAddress={wallet.address}
                   onUseSimulated={handleUseSimulated}
                   onCreateLive={handleCreateLive}
+                  onClearSession={clearLiveSession}
                 />
               </div>
 

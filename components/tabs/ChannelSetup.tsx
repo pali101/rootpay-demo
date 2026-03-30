@@ -17,6 +17,7 @@ type ChannelSetupProps = {
   walletAddress: string | null
   onUseSimulated: () => void
   onCreateLive: (data: LiveChannelData) => void
+  onClearSession: () => void
 }
 
 type ProgressStep = 'idle' | 'generating' | 'signing' | 'submitting' | 'confirmed' | 'error'
@@ -70,6 +71,7 @@ export default function ChannelSetup({
   walletAddress,
   onUseSimulated,
   onCreateLive,
+  onClearSession,
 }: ChannelSetupProps) {
   const [progress, setProgress] = useState<ProgressStep>('idle')
   const [errorMsg, setErrorMsg] = useState<string>('')
@@ -84,10 +86,12 @@ export default function ChannelSetup({
     setReclaiming(true)
     setReclaimMsg(null)
     const result = await reclaimChannel(reclaimMerchant, signer)
-    setReclaimMsg(result.success
-      ? { text: 'Channel reclaimed.', ok: true }
-      : { text: result.error ?? 'Reclaim failed', ok: false }
-    )
+    if (result.success) {
+      onClearSession()
+      setReclaimMsg({ text: 'Channel reclaimed. You can now create a new one.', ok: true })
+    } else {
+      setReclaimMsg({ text: result.error ?? 'Reclaim failed', ok: false })
+    }
     setReclaiming(false)
   }
 
