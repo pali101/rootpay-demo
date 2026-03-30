@@ -76,7 +76,7 @@ function RedeemModal({
   const [step, setStep] = useState<RedeemStep>('idle')
   const [errorMsg, setErrorMsg] = useState('')
 
-  const hasSession = sessionMode === 'live' && !!sessionPayer && sessionLeafIndex > 0
+  const hasSession = !!sessionPayer && sessionLeafIndex > 0
   // If channel is selected from table AND has a session for the same payer, use session
   const useSession = hasSession && channel !== null && channel.payer.toLowerCase() === sessionPayer.toLowerCase()
 
@@ -291,7 +291,7 @@ export default function MerchantPanel({
   // Success state
   const [lastTx, setLastTx] = useState<{ txHash: string; claimable: string } | null>(null)
 
-  const hasSession = sessionMode === 'live' && !!sessionPayer && sessionLeafIndex > 0
+  const hasSession = !!sessionPayer && sessionLeafIndex > 0
 
   const handleSuccess = (txHash: string, claimable: string) => {
     setModalTarget(null)
@@ -334,6 +334,44 @@ export default function MerchantPanel({
             >
               Redeem session →
             </button>
+          </div>
+        )}
+
+        {/* Simulated channel table (no wallet) */}
+        {!walletAddress && sessionMode === 'simulated' && hasSession && (
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="font-mono text-[10px] uppercase tracking-widest text-[#6B6A65]">Open Channels</span>
+              <span className="font-mono text-[9px] px-1.5 py-0.5 border border-[rgba(255,255,255,0.1)] rounded-sm text-[#6B6A65]">SIMULATED</span>
+            </div>
+            <div className="border border-[rgba(255,255,255,0.08)] rounded-sm overflow-hidden">
+              <div className="grid grid-cols-[1fr_auto_auto_auto] gap-x-4 px-3 py-2 border-b border-[rgba(255,255,255,0.06)] bg-[rgba(255,255,255,0.02)]">
+                <span className="font-mono text-[9px] uppercase tracking-widest text-[#6B6A65]">Payer</span>
+                <span className="font-mono text-[9px] uppercase tracking-widest text-[#6B6A65] text-right">Locked</span>
+                <span className="font-mono text-[9px] uppercase tracking-widest text-[#6B6A65] text-right">Leaves</span>
+                <span className="font-mono text-[9px] uppercase tracking-widest text-[#6B6A65] text-right"></span>
+              </div>
+              <div className="grid grid-cols-[1fr_auto_auto_auto] gap-x-4 items-center px-3 py-2.5">
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <span className="w-1 h-1 rounded-full bg-[#00E5A0] shrink-0" />
+                  <span className="font-mono text-[10px] text-[#E8E6DF] truncate">
+                    {sessionPayer.slice(0, 8)}…{sessionPayer.slice(-6)}
+                  </span>
+                </div>
+                <span className="font-mono text-[10px] text-[#00E5A0] text-right whitespace-nowrap">
+                  {TOTAL_LOCKED.toFixed(2)} USDFC
+                </span>
+                <span className="font-mono text-[10px] text-[#6B6A65] text-right whitespace-nowrap">
+                  {TREE_SIZE.toLocaleString('en-US')}
+                </span>
+                <button
+                  onClick={() => setModalTarget('manual')}
+                  className="font-mono text-[9px] uppercase tracking-wider text-[#6B6A65] border border-[rgba(255,255,255,0.1)] rounded-sm px-2 py-0.5 hover:border-[rgba(0,229,160,0.4)] hover:text-[#00E5A0] transition-all whitespace-nowrap"
+                >
+                  Redeem
+                </button>
+              </div>
+            </div>
           </div>
         )}
 

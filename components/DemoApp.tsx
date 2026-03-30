@@ -77,6 +77,12 @@ export default function DemoApp() {
     setState(s => ({ ...s, mode: 'simulated', channelActive: true }))
   }, [])
 
+  const handleUseSimulatedMerchant = useCallback(() => {
+    setGateCleared(true)
+    setRole('merchant')
+    setState(s => ({ ...s, mode: 'simulated', channelActive: true }))
+  }, [])
+
   const handleEnterAs = useCallback((r: Role) => {
     setRole(r)
     setGateCleared(true)
@@ -110,6 +116,7 @@ const handleSelectTier = useCallback((tier: TrustWindow) => {
         wallet={wallet}
         onEnterAs={handleEnterAs}
         onSimulated={handleUseSimulated}
+        onSimulatedMerchant={handleUseSimulatedMerchant}
       />
     )
   }

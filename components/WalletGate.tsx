@@ -16,6 +16,7 @@ type WalletGateProps = {
   }
   onEnterAs: (role: Role) => void
   onSimulated: () => void
+  onSimulatedMerchant: () => void
 }
 
 function avatarColor(address: string): string {
@@ -24,8 +25,9 @@ function avatarColor(address: string): string {
   return colors[idx]
 }
 
-export default function WalletGate({ wallet, onEnterAs, onSimulated }: WalletGateProps) {
+export default function WalletGate({ wallet, onEnterAs, onSimulated, onSimulatedMerchant }: WalletGateProps) {
   const [mounted, setMounted] = useState(false)
+  const [showSimRole, setShowSimRole] = useState(false)
   useEffect(() => setMounted(true), [])
 
   const { hasWallet, connected, address, connecting, error, connect } = wallet
@@ -127,12 +129,36 @@ export default function WalletGate({ wallet, onEnterAs, onSimulated }: WalletGat
             <div className="flex-1 h-px bg-[rgba(255,255,255,0.06)]" />
           </div>
 
-          <button
-            onClick={onSimulated}
-            className="w-full font-mono text-[11px] text-[#6B6A65] hover:text-[#E8E6DF] transition-colors text-center cursor-pointer"
-          >
-            Continue with simulated data — no wallet needed →
-          </button>
+          {!showSimRole ? (
+            <button
+              onClick={() => setShowSimRole(true)}
+              className="w-full font-mono text-[11px] text-[#6B6A65] hover:text-[#E8E6DF] transition-colors text-center cursor-pointer"
+            >
+              Continue with simulated data — no wallet needed →
+            </button>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-2"
+            >
+              <p className="font-mono text-[10px] text-[#6B6A65] text-center">Enter demo as:</p>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={onSimulated}
+                  className="font-mono text-xs py-2 px-3 rounded-sm border border-[rgba(255,255,255,0.1)] text-[#6B6A65] hover:border-[rgba(255,255,255,0.25)] hover:text-[#E8E6DF] transition-all cursor-pointer text-center"
+                >
+                  Payer
+                </button>
+                <button
+                  onClick={onSimulatedMerchant}
+                  className="font-mono text-xs py-2 px-3 rounded-sm border border-[rgba(255,255,255,0.1)] text-[#6B6A65] hover:border-[rgba(255,255,255,0.25)] hover:text-[#E8E6DF] transition-all cursor-pointer text-center"
+                >
+                  Merchant
+                </button>
+              </div>
+            </motion.div>
+          )}
         </div>
 
         <p className="font-mono text-[10px] text-[#6B6A65] text-center mt-5">
