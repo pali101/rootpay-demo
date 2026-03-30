@@ -23,7 +23,6 @@ type DemoState = {
   mode: 'simulated' | 'live'
   leafIndex: number
   channelActive: boolean
-  settled: boolean
   trustWindow: TrustWindow
 }
 
@@ -42,7 +41,6 @@ export default function DemoApp() {
     mode: 'simulated',
     leafIndex: 0,
     channelActive: false,
-    settled: false,
     trustWindow: 60,
   })
 
@@ -204,7 +202,6 @@ const handleSelectTier = useCallback((tier: TrustWindow) => {
               <HeroHeader
                 leafIndex={leafIndex}
                 chainTxs={chainTxs}
-                settled={state.settled}
                 wallet={wallet}
                 usdfc={usdfc}
                 gasPerTransfer={gasPerTransfer}
@@ -213,7 +210,6 @@ const handleSelectTier = useCallback((tier: TrustWindow) => {
                 leafIndex={leafIndex}
                 channelActive={state.channelActive}
                 animateProof={false}
-                settled={state.settled}
               />
               <div className="flex items-center gap-4 pt-1">
                 <span className="font-mono text-xs text-[#3a3a36]">// source</span>

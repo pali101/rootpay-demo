@@ -25,7 +25,7 @@ const dmSans = DM_Sans({
 })
 
 export const metadata: Metadata = {
-  title: 'RootPay — Merkle-Indexed Micropayment Channels',
+  title: 'RootPay - Merkle-Indexed Micropayment Channels',
   description: 'One root. Thousands of payments. One settlement.',
   openGraph: {
     title: 'RootPay',

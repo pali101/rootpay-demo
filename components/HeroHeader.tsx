@@ -6,7 +6,6 @@ import ChainBadge from './ChainBadge'
 type HeroHeaderProps = {
   leafIndex: number
   chainTxs: number
-  settled: boolean
   usdfc: string | null
   gasPerTransfer: number
   wallet: {
@@ -21,7 +20,6 @@ type HeroHeaderProps = {
 export default function HeroHeader({
   leafIndex,
   chainTxs,
-  settled,
   usdfc,
   gasPerTransfer,
   wallet,

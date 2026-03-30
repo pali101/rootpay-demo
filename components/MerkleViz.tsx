@@ -8,7 +8,6 @@ type MerkleVizProps = {
   leafIndex: number
   channelActive: boolean
   animateProof?: boolean
-  settled?: boolean
 }
 
 // Pre-computed node positions in a 400x300 viewBox
