@@ -2,7 +2,7 @@
 
 **One root. Thousands of payments. One settlement.**
 
-RootPay is a Merkle-indexed micropayment channel system built on Filecoin. A payer locks USDC into a smart contract and commits to a Merkle tree of 1,024 payment slots. The merchant receives off-chain micropayments — one secret per leaf — and settles the entire batch on-chain with a single Merkle proof. No per-payment transactions. No per-payment chain fees.
+RootPay is a Merkle-indexed micropayment channel system built on Base. A payer locks USDC into a smart contract and commits to a Merkle tree of 1,024 payment slots. The merchant receives off-chain micropayments — one secret per leaf — and settles the entire batch on-chain with a single Merkle proof. No per-payment transactions. No per-payment chain fees.
 
 ---
 
@@ -46,7 +46,7 @@ If the payer needs to close the channel early (e.g., page reload lost the secret
 
 ## Contract Interface
 
-Deployed on Filecoin Calibration testnet at `0x5f3784791704d69e975D129AfEc55c23D3616AA4`.
+Deployed on Base Sepolia testnet at `0xA5a481b8a8b32Ac5525D4092c65BF2e18A5fD907`.
 
 ```solidity
 // Payer locks USDC and commits a Merkle root
@@ -90,7 +90,7 @@ event ChannelReclaimed(address indexed payer, address indexed merchant, address 
 The demo runs in two modes:
 
 - **Simulated** (default) — Pre-seeded data, no wallet required. Explore the full UI and payment flow instantly.
-- **Live** — Connect MetaMask to Filecoin Calibration testnet and interact with the deployed contract using real USDC.
+- **Live** — Connect MetaMask to Base Sepolia testnet and interact with the deployed contract using real USDC.
 
 The UI has two roles:
 
@@ -119,9 +119,9 @@ npm install
 Create `.env.local` in the project root:
 
 ```env
-NEXT_PUBLIC_CONTRACT_ADDRESS=0x5f3784791704d69e975D129AfEc55c23D3616AA4
-NEXT_PUBLIC_USDC=0xb3042734b608a1B16e9e86B374A3f3e389B4cDf0
-NEXT_PUBLIC_RPC_URL=https://api.calibration.node.glif.io/rpc/v1
+NEXT_PUBLIC_CONTRACT_ADDRESS=0xA5a481b8a8b32Ac5525D4092c65BF2e18A5fD907
+NEXT_PUBLIC_USDC=0x036CbD53842c5426634e7929541eC2318f3dCF7e
+NEXT_PUBLIC_RPC_URL=https://sepolia.base.org
 NEXT_PUBLIC_MERCHANT_WITHDRAW_BLOCKS=100
 NEXT_PUBLIC_PAYER_WITHDRAW_BLOCKS=200
 ```
@@ -149,7 +149,7 @@ components/
   MerkleViz.tsx           # Animated SVG Merkle tree with proof path highlight
   HashDisplay.tsx         # Truncated hash with copy-to-clipboard
   StatCard.tsx            # Stat tile (leaf index, USDC earned, proofs verified)
-  ChainBadge.tsx          # Filecoin Calibration network indicator
+  ChainBadge.tsx          # Base Sepolia network indicator
   tabs/
     ChannelSetup.tsx      # USDC approve → createChannel, reclaim option
     LiveTicker.tsx        # Real-time payment event feed, Copy Proof button
@@ -168,7 +168,7 @@ lib/
   contract.ts             # createChannel, redeemChannel, reclaimChannel + error decoding
   constants.ts            # Contract/token addresses, RPC, tree params
   demoData.ts             # Pre-seeded demo values (CIDs, addresses, hashes)
-  wagmi-config.ts         # wagmi chain config for Filecoin Calibration
+  wagmi-config.ts         # wagmi chain config for Base Sepolia
 ```
 
 ---
@@ -180,7 +180,7 @@ lib/
 | Framework | Next.js 15 |
 | Language | TypeScript |
 | Wallet | wagmi v2 + MetaMask |
-| Blockchain | ethers.js 6, Filecoin Calibration (chain ID 314159) |
+| Blockchain | ethers.js 6, Base Sepolia (chain ID 84532) |
 | Cryptography | merkletreejs, keccak256 |
 | Animations | Framer Motion |
 | Styling | Tailwind CSS |
@@ -192,12 +192,11 @@ lib/
 
 | | |
 |---|---|
-| Network | Filecoin Calibration testnet |
-| Chain ID | 314159 |
-| RPC | `https://api.calibration.node.glif.io/rpc/v1` |
-| Explorer | `https://calibration.filfox.info` |
-| FIL faucet | `https://faucet.calibnet.chainsafe-fil.io/funds.html` |
-| Get USDC | `https://docs.secured.finance/usdfc-stablecoin/getting-started/getting-test-usdfc-on-testnet` |
+| Network | Base Sepolia testnet |
+| Chain ID | 84532 |
+| RPC | `https://sepolia.base.org` |
+| Explorer | `https://sepolia.basescan.org` |
+| Get USDC | `https://faucet.circle.com/` |
 
 ---
 
