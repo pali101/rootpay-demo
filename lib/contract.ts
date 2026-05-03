@@ -16,6 +16,7 @@ const ABI = [
 
 const ERC20_PERMIT_ABI = [
   'function name() view returns (string)',
+  'function version() view returns (string)',
   'function decimals() view returns (uint8)',
   'function nonces(address owner) view returns (uint256)',
 ]
@@ -134,7 +135,11 @@ export async function createChannel(
 ): Promise<CreateChannelResult> {
   try {
     const token = new ethers.Contract(USDC_ADDRESS, ERC20_PERMIT_ABI, signer)
-    const [decimals, tokenName] = await Promise.all([token.decimals(), token.name()])
+    const [decimals, tokenName, tokenVersion] = await Promise.all([
+      token.decimals(),
+      token.name(),
+      token.version().catch(() => '1'),
+    ])
     const amount = ethers.parseUnits(params.tokenAmount, decimals)
     const owner = await signer.getAddress()
     const nonce: bigint = await token.nonces(owner)
@@ -144,7 +149,7 @@ export async function createChannel(
     params.onSigning?.()
     const domain = {
       name: tokenName,
-      version: '1',
+      version: tokenVersion,
       chainId: (await signer.provider!.getNetwork()).chainId,
       verifyingContract: USDC_ADDRESS,
     }
