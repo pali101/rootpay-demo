@@ -1,5 +1,5 @@
 import { ethers } from 'ethers'
-import { CONTRACT_ADDRESS, USDFC_ADDRESS } from './constants'
+import { CONTRACT_ADDRESS, USDC_ADDRESS } from './constants'
 
 const ABI = [
   // createChannelWithPermit — single tx, no prior approve needed
@@ -116,7 +116,7 @@ export type CreateChannelParams = {
   treeSize: number
   merchantWithdrawAfterBlocks: number
   payerWithdrawAfterBlocks: number
-  tokenAmount: string // USDFC amount as human-readable string (e.g. "10")
+  tokenAmount: string // USDC amount as human-readable string (e.g. "10")
   onSigning?: () => void
   onSubmitting?: () => void
 }
@@ -133,7 +133,7 @@ export async function createChannel(
   signer: ethers.Signer
 ): Promise<CreateChannelResult> {
   try {
-    const token = new ethers.Contract(USDFC_ADDRESS, ERC20_PERMIT_ABI, signer)
+    const token = new ethers.Contract(USDC_ADDRESS, ERC20_PERMIT_ABI, signer)
     const [decimals, tokenName] = await Promise.all([token.decimals(), token.name()])
     const amount = ethers.parseUnits(params.tokenAmount, decimals)
     const owner = await signer.getAddress()
@@ -146,7 +146,7 @@ export async function createChannel(
       name: tokenName,
       version: '1',
       chainId: (await signer.provider!.getNetwork()).chainId,
-      verifyingContract: USDFC_ADDRESS,
+      verifyingContract: USDC_ADDRESS,
     }
     const types = {
       Permit: [
@@ -167,7 +167,7 @@ export async function createChannel(
     const tx = await contract.createChannelWithPermit(
       owner,
       params.merchant,
-      USDFC_ADDRESS,
+      USDC_ADDRESS,
       params.merkleRoot,
       amount,
       params.treeSize,
@@ -190,7 +190,7 @@ export async function reclaimChannel(
 ): Promise<TxResult> {
   try {
     const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer)
-    const tx = await contract.reclaimChannel(merchant, USDFC_ADDRESS)
+    const tx = await contract.reclaimChannel(merchant, USDC_ADDRESS)
     const receipt = await tx.wait()
     return { success: true, txHash: receipt.hash, blockNumber: receipt.blockNumber }
   } catch (e: unknown) {
@@ -207,7 +207,7 @@ export async function redeemChannel(
     const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer)
     const tx = await contract.redeemChannel(
       params.payer,
-      USDFC_ADDRESS,
+      USDC_ADDRESS,
       params.leafIndex,
       params.secret,
       params.proof

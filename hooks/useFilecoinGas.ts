@@ -1,13 +1,13 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { RPC_URL, USDFC_ADDRESS } from '@/lib/constants'
+import { RPC_URL, USDC_ADDRESS } from '@/lib/constants'
 
 // Fallback: measured from a real Calibration transfer (2025-03)
 const FALLBACK_GAS = 32_451_156
 
 async function fetchTransferGas(): Promise<number> {
-  // 1. Find a recent single Transfer log from USDFC
+  // 1. Find a recent single Transfer log from USDC
   const latestRes = await fetch(RPC_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -23,7 +23,7 @@ async function fetchTransferGas(): Promise<number> {
     body: JSON.stringify({
       jsonrpc: '2.0', id: 2, method: 'eth_getLogs',
       params: [{
-        address: USDFC_ADDRESS.toLowerCase(),
+        address: USDC_ADDRESS.toLowerCase(),
         topics: ['0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'],
         fromBlock,
         toBlock: 'latest',

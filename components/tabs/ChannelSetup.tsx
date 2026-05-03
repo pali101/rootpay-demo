@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ethers } from 'ethers'
 import HashDisplay from '../HashDisplay'
-import { EXPLORER_URL, MERCHANT_WITHDRAW_BLOCKS, PAYER_WITHDRAW_BLOCKS, TOTAL_LOCKED, USDFC_ADDRESS } from '@/lib/constants'
+import { EXPLORER_URL, MERCHANT_WITHDRAW_BLOCKS, PAYER_WITHDRAW_BLOCKS, TOTAL_LOCKED, USDC_ADDRESS } from '@/lib/constants'
 import { createChannel, reclaimChannel } from '@/lib/contract'
 import type { ChannelParams, LiveChannelData } from '@/hooks/useChannel'
 
@@ -173,9 +173,9 @@ export default function ChannelSetup({
         />
         <Row label="Merkle root" value={channelParams.merkleRoot} isHash />
         <Row label="Tree size" value={`${channelParams.treeSize.toLocaleString('en-US')} leaves`} />
-        <Row label="Token" value={USDFC_ADDRESS} isHash />
-        <Row label="Locked amount" value={`${channelParams.lockedAmount.toFixed(2)} USDFC`} />
-        <Row label="Value per leaf" value={`${channelParams.valuePerLeaf.toFixed(6)} USDFC`} />
+        <Row label="Token" value={USDC_ADDRESS} isHash />
+        <Row label="Locked amount" value={`${channelParams.lockedAmount.toFixed(2)} USDC`} />
+        <Row label="Value per leaf" value={`${channelParams.valuePerLeaf.toFixed(6)} USDC`} />
         <Row
           label="Payer"
           value={walletAddress ?? channelParams.payer}
@@ -293,7 +293,7 @@ export default function ChannelSetup({
           Reclaim existing channel
         </span>
         <p className="font-mono text-[10px] text-[#6B6A65] leading-relaxed">
-          Recover locked USDFC if proofs are lost on reload, or to close a channel before creating a new one.
+          Recover locked USDC if proofs are lost on reload, or to close a channel before creating a new one.
         </p>
         <input
           type="text"

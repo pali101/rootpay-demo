@@ -52,7 +52,7 @@ export default function LiveTicker({
       {/* Stat cards */}
       <div className="grid grid-cols-4 gap-2">
         <StatCard label="Leaf Index" value={leafIndex.toLocaleString('en-US')} accent="default" />
-        <StatCard label="USDFC Earned" value={filEarned} subLabel="USDFC" accent="emerald" />
+        <StatCard label="USDC Earned" value={filEarned} subLabel="USDC" accent="emerald" />
         <StatCard label="Proofs Verified" value={proofsVerified} accent="default" />
         <StatCard label="Chain Txs" value="0" accent="coral" />
       </div>

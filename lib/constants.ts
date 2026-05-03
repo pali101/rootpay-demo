@@ -9,7 +9,7 @@ export const VALUE_PER_LEAF = 10 / 8192 // USDC (10 USDC / 8192 leaves)
 export const TOTAL_LOCKED = 10 // USDC
 
 // USDC ERC20 token (Base Sepolia)
-export const USDFC_ADDRESS = process.env.NEXT_PUBLIC_USDC || '0x036CbD53842c5426634e7929541eC2318f3dCF7e'
+export const USDC_ADDRESS = process.env.NEXT_PUBLIC_USDC || '0x036CbD53842c5426634e7929541eC2318f3dCF7e'
 
 // Live mode config — set these in .env.local
 export const MERCHANT_WITHDRAW_BLOCKS = Number(process.env.NEXT_PUBLIC_MERCHANT_WITHDRAW_BLOCKS) || 100

@@ -11,7 +11,7 @@ import MerchantPanel from './tabs/MerchantPanel'
 import { useTicker } from '@/hooks/useTicker'
 import { useChannel, type LiveChannelData } from '@/hooks/useChannel'
 import { useWallet } from '@/hooks/useWallet'
-import { useUSDFCBalance } from '@/hooks/useUSDFCBalance'
+import { useUSDCBalance } from '@/hooks/useUSDCBalance'
 import { useFilecoinGas } from '@/hooks/useFilecoinGas'
 import WalletGate from './WalletGate'
 
@@ -45,7 +45,7 @@ export default function DemoApp() {
   })
 
   const wallet = useWallet()
-  const usdfc = useUSDFCBalance(wallet.signer)
+  const usdfc = useUSDCBalance(wallet.signer)
   const gasPerTransfer = useFilecoinGas()
   const { channelParams, treeReady, setLiveChannelData, clearLiveSession, getProofForLeaf, getSecretForLeaf } =
     useChannel(state.mode)
@@ -145,7 +145,7 @@ const handleSelectTier = useCallback((tier: TrustWindow) => {
               )}
               {usdfc !== null && (
                 <span className="font-mono text-[10px] text-[#00E5A0]">
-                  {usdfc} USDFC
+                  {usdfc} USDC
                 </span>
               )}
               <button

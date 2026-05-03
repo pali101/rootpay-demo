@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ethers } from 'ethers'
 import HashDisplay from '../HashDisplay'
-import { USDFC_ADDRESS, VALUE_PER_LEAF, TOTAL_LOCKED, TREE_SIZE, EXPLORER_URL } from '@/lib/constants'
+import { USDC_ADDRESS, VALUE_PER_LEAF, TOTAL_LOCKED, TREE_SIZE, EXPLORER_URL } from '@/lib/constants'
 import { redeemChannel } from '@/lib/contract'
 import { useOpenChannels } from '@/hooks/useOpenChannels'
 import type { SubgraphChannel } from '@/lib/subgraph'
@@ -164,7 +164,7 @@ function RedeemModal({
               <div className="flex items-center justify-between py-1">
                 <span className="font-mono text-[10px] text-[#6B6A65]">Locked</span>
                 <span className="font-mono text-[10px] text-[#00E5A0]">
-                  {(Number(channel.amount) / 1e18).toFixed(2)} USDFC
+                  {(Number(channel.amount) / 1e6).toFixed(2)} USDC
                 </span>
               </div>
             </div>
@@ -189,11 +189,11 @@ function RedeemModal({
               </div>
               <div className="flex items-center justify-between">
                 <span className="font-mono text-[10px] text-[#6B6A65]">Claimable</span>
-                <span className="font-mono text-[10px] text-[#00E5A0]">{claimable} USDFC</span>
+                <span className="font-mono text-[10px] text-[#00E5A0]">{claimable} USDC</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="font-mono text-[10px] text-[#6B6A65]">Refund to payer</span>
-                <span className="font-mono text-[10px] text-[#E8E6DF]">{refund} USDFC</span>
+                <span className="font-mono text-[10px] text-[#E8E6DF]">{refund} USDC</span>
               </div>
             </div>
           ) : (
@@ -233,7 +233,7 @@ function RedeemModal({
                   </div>
                   <div className="flex items-center justify-between py-1">
                     <span className="font-mono text-[10px] text-[#6B6A65]">Claimable</span>
-                    <span className="font-mono text-[10px] text-[#00E5A0]">{claimable} USDFC</span>
+                    <span className="font-mono text-[10px] text-[#00E5A0]">{claimable} USDC</span>
                   </div>
                 </div>
               )}
@@ -359,7 +359,7 @@ export default function MerchantPanel({
                   </span>
                 </div>
                 <span className="font-mono text-[10px] text-[#00E5A0] text-right whitespace-nowrap">
-                  {TOTAL_LOCKED.toFixed(2)} USDFC
+                  {TOTAL_LOCKED.toFixed(2)} USDC
                 </span>
                 <span className="font-mono text-[10px] text-[#6B6A65] text-right whitespace-nowrap">
                   {TREE_SIZE.toLocaleString('en-US')}
@@ -414,7 +414,7 @@ export default function MerchantPanel({
 
                 {/* Table rows */}
                 {channels.map((ch, i) => {
-                  const amountUSDFC = (Number(ch.amount) / 1e18).toFixed(2)
+                  const amountUSDC = (Number(ch.amount) / 1e6).toFixed(2)
                   const isSessionPayer = sessionPayer && ch.payer.toLowerCase() === sessionPayer.toLowerCase()
                   return (
                     <motion.div
@@ -433,7 +433,7 @@ export default function MerchantPanel({
                         </span>
                       </div>
                       <span className="font-mono text-[10px] text-[#00E5A0] text-right whitespace-nowrap">
-                        {amountUSDFC} USDFC
+                        {amountUSDC} USDC
                       </span>
                       <span className="font-mono text-[10px] text-[#6B6A65] text-right whitespace-nowrap">
                         {Number(ch.treeSize).toLocaleString('en-US')}
@@ -490,7 +490,7 @@ export default function MerchantPanel({
               </div>
               <div className="flex items-center justify-between">
                 <span className="font-mono text-[10px] text-[#6B6A65]">Received</span>
-                <span className="font-mono text-[10px] text-[#00E5A0]">+{lastTx.claimable} USDFC</span>
+                <span className="font-mono text-[10px] text-[#00E5A0]">+{lastTx.claimable} USDC</span>
               </div>
             </motion.div>
           )}
@@ -501,7 +501,7 @@ export default function MerchantPanel({
           <p className="font-mono text-[10px] text-[#6B6A65] leading-relaxed">
             <span className="text-[#E8E6DF]">How it works:</span> Payer clicks{' '}
             <span className="text-[#E8E6DF]">⎘ Copy Proof</span> in Live Ticker and sends you the JSON.
-            Paste it in the Redeem modal — the highest verified leaf claims all accumulated USDFC in one on-chain tx.
+            Paste it in the Redeem modal — the highest verified leaf claims all accumulated USDC in one on-chain tx.
           </p>
         </div>
       </div>

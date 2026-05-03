@@ -156,8 +156,8 @@ export default function Settlement({
       {/* Preview table */}
       <div className="card rounded-sm p-4 space-y-2">
         <PreviewRow label="Highest verified leaf" value={`${leafIndex.toLocaleString('en-US')} / ${TOTAL_LEAVES.toLocaleString('en-US')}`} />
-        <PreviewRow label="Merchant receives" value={`${merchantReceives} USDFC`} accent="emerald" />
-        <PreviewRow label="Payer refunded" value={`${payerRefunded} USDFC`} />
+        <PreviewRow label="Merchant receives" value={`${merchantReceives} USDC`} accent="emerald" />
+        <PreviewRow label="Payer refunded" value={`${payerRefunded} USDC`} />
         <PreviewRow label="Proof depth" value={`${PROOF_DEPTH} hashes (log₂ ${TOTAL_LEAVES.toLocaleString('en-US')})`} />
       </div>
 
@@ -286,7 +286,7 @@ export default function Settlement({
       {mode === 'live' && (
         <div className="border border-[rgba(255,255,255,0.06)] rounded-sm p-3 space-y-2">
           <p className="font-mono text-[10px] text-[#6B6A65] leading-relaxed">
-            <span className="text-[#E8E6DF]">Reclaim channel</span> — recovers all locked USDFC back to payer.
+            <span className="text-[#E8E6DF]">Reclaim channel</span> — recovers all locked USDC back to payer.
             Use this if proofs are lost on reload, or to clear an existing channel before creating a new one.
           </p>
           <div className="space-y-1">
@@ -399,15 +399,15 @@ function SettlementReceipt({
       <div className="card rounded-sm p-4 space-y-2">
         <div className="flex items-center justify-between py-1 border-b border-[rgba(255,255,255,0.04)]">
           <span className="font-mono text-xs text-[#6B6A65]">Merchant</span>
-          <span className="font-mono text-xs text-[#00E5A0]">+{merchantReceives} USDFC</span>
+          <span className="font-mono text-xs text-[#00E5A0]">+{merchantReceives} USDC</span>
         </div>
         <div className="flex items-center justify-between py-1 border-b border-[rgba(255,255,255,0.04)]">
           <span className="font-mono text-xs text-[#6B6A65]">Payer (refund)</span>
-          <span className="font-mono text-xs text-[#E8E6DF]">+{payerRefunded} USDFC</span>
+          <span className="font-mono text-xs text-[#E8E6DF]">+{payerRefunded} USDC</span>
         </div>
         <div className="flex items-center justify-between py-1">
           <span className="font-mono text-xs text-[#6B6A65]">Dust (remainder)</span>
-          <span className="font-mono text-xs text-[#6B6A65]">0.000000 USDFC</span>
+          <span className="font-mono text-xs text-[#6B6A65]">0.000000 USDC</span>
         </div>
       </div>
 

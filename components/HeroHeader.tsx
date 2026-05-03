@@ -72,7 +72,7 @@ export default function HeroHeader({
               </span>
               {usdfc !== null && (
                 <span className="font-mono text-[10px] text-[#6B6A65]">
-                  {usdfc} USDFC
+                  {usdfc} USDC
                 </span>
               )}
             </div>
@@ -120,13 +120,13 @@ export default function HeroHeader({
           </span>
         </div>
 
-        {/* USDFC Earned */}
+        {/* USDC Earned */}
         <div className="card rounded-sm p-2.5 flex flex-col gap-0.5">
           <span className="font-mono text-2xl font-medium tabular-nums leading-none text-[#00E5A0]">
             {filEarned}
           </span>
           <span className="font-mono text-[9px] uppercase tracking-widest text-[#6B6A65]">
-            USDFC · earned off-chain
+            USDC · earned off-chain
           </span>
         </div>
       </div>

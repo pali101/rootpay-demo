@@ -2,7 +2,7 @@
 
 **One root. Thousands of payments. One settlement.**
 
-RootPay is a Merkle-indexed micropayment channel system built on Filecoin. A payer locks USDFC into a smart contract and commits to a Merkle tree of 1,024 payment slots. The merchant receives off-chain micropayments — one secret per leaf — and settles the entire batch on-chain with a single Merkle proof. No per-payment transactions. No per-payment chain fees.
+RootPay is a Merkle-indexed micropayment channel system built on Filecoin. A payer locks USDC into a smart contract and commits to a Merkle tree of 1,024 payment slots. The merchant receives off-chain micropayments — one secret per leaf — and settles the entire batch on-chain with a single Merkle proof. No per-payment transactions. No per-payment chain fees.
 
 ---
 
@@ -16,7 +16,7 @@ The payer generates 1,024 random 32-byte secrets client-side and builds a Merkle
 leaf[i] = keccak256(abi.encode(uint16(i), bytes32(secret[i])))
 ```
 
-The Merkle root, along with 10 USDFC (ERC20), is committed on-chain via `createChannel`. This is the only transaction the payer ever sends.
+The Merkle root, along with 10 USDC (ERC20), is committed on-chain via `createChannel`. This is the only transaction the payer ever sends.
 
 ### 2. Off-Chain Payments
 
@@ -35,7 +35,7 @@ The merchant periodically checkpoints a full Merkle proof to establish a verifia
 ### 4. Settlement
 
 The merchant calls `redeemChannel` with the highest verified leaf index, its secret, and a 10-hash Merkle proof. The contract:
-- Pays out `(leafIndex + 1) × valuePerLeaf` USDFC to the merchant
+- Pays out `(leafIndex + 1) × valuePerLeaf` USDC to the merchant
 - Refunds the remainder to the payer
 
 ### 5. Reclaim
@@ -49,7 +49,7 @@ If the payer needs to close the channel early (e.g., page reload lost the secret
 Deployed on Filecoin Calibration testnet at `0x5f3784791704d69e975D129AfEc55c23D3616AA4`.
 
 ```solidity
-// Payer locks USDFC and commits a Merkle root
+// Payer locks USDC and commits a Merkle root
 function createChannel(
     address merchant,
     address token,
@@ -90,7 +90,7 @@ event ChannelReclaimed(address indexed payer, address indexed merchant, address 
 The demo runs in two modes:
 
 - **Simulated** (default) — Pre-seeded data, no wallet required. Explore the full UI and payment flow instantly.
-- **Live** — Connect MetaMask to Filecoin Calibration testnet and interact with the deployed contract using real USDFC.
+- **Live** — Connect MetaMask to Filecoin Calibration testnet and interact with the deployed contract using real USDC.
 
 The UI has two roles:
 
@@ -120,7 +120,7 @@ Create `.env.local` in the project root:
 
 ```env
 NEXT_PUBLIC_CONTRACT_ADDRESS=0x5f3784791704d69e975D129AfEc55c23D3616AA4
-NEXT_PUBLIC_USDFC=0xb3042734b608a1B16e9e86B374A3f3e389B4cDf0
+NEXT_PUBLIC_USDC=0xb3042734b608a1B16e9e86B374A3f3e389B4cDf0
 NEXT_PUBLIC_RPC_URL=https://api.calibration.node.glif.io/rpc/v1
 NEXT_PUBLIC_MERCHANT_WITHDRAW_BLOCKS=100
 NEXT_PUBLIC_PAYER_WITHDRAW_BLOCKS=200
@@ -145,13 +145,13 @@ app/
 components/
   DemoApp.tsx             # Top-level state and role routing (payer / merchant)
   WalletGate.tsx          # Connect wallet + choose payer or merchant role
-  HeroHeader.tsx          # Live leaf count and USDFC earned off-chain
+  HeroHeader.tsx          # Live leaf count and USDC earned off-chain
   MerkleViz.tsx           # Animated SVG Merkle tree with proof path highlight
   HashDisplay.tsx         # Truncated hash with copy-to-clipboard
-  StatCard.tsx            # Stat tile (leaf index, USDFC earned, proofs verified)
+  StatCard.tsx            # Stat tile (leaf index, USDC earned, proofs verified)
   ChainBadge.tsx          # Filecoin Calibration network indicator
   tabs/
-    ChannelSetup.tsx      # USDFC approve → createChannel, reclaim option
+    ChannelSetup.tsx      # USDC approve → createChannel, reclaim option
     LiveTicker.tsx        # Real-time payment event feed, Copy Proof button
     TrustTiers.tsx        # Verification window selector (30s / 60s / 5min)
     Settlement.tsx        # Final on-chain redemption with proof animation
@@ -197,7 +197,7 @@ lib/
 | RPC | `https://api.calibration.node.glif.io/rpc/v1` |
 | Explorer | `https://calibration.filfox.info` |
 | FIL faucet | `https://faucet.calibnet.chainsafe-fil.io/funds.html` |
-| Get USDFC | `https://docs.secured.finance/usdfc-stablecoin/getting-started/getting-test-usdfc-on-testnet` |
+| Get USDC | `https://docs.secured.finance/usdfc-stablecoin/getting-started/getting-test-usdfc-on-testnet` |
 
 ---
 
