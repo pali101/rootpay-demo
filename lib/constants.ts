@@ -1,15 +1,15 @@
-export const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || '0x7f3a4b8c2d1e9f0a3b5c7d2e4f6a8b0c1d3e5f7a'
-export const RPC_URL = process.env.NEXT_PUBLIC_RPC_URL || 'https://api.calibration.node.glif.io/rpc/v1'
-export const CHAIN_ID = 314159 // Filecoin Calibration testnet
-export const CHAIN_NAME = 'Filecoin Calibration'
-export const EXPLORER_URL = 'https://calibration.filfox.info/en'
+export const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || '0xA5a481b8a8b32Ac5525D4092c65BF2e18A5fD907'
+export const RPC_URL = process.env.NEXT_PUBLIC_RPC_URL || 'https://sepolia.base.org'
+export const CHAIN_ID = 84532 // Base Sepolia testnet
+export const CHAIN_NAME = 'Base Sepolia'
+export const EXPLORER_URL = 'https://sepolia.basescan.org'
 
 export const TREE_SIZE = 8192
-export const VALUE_PER_LEAF = 10 / 8192 // USDFC (10 USDFC / 8192 leaves)
-export const TOTAL_LOCKED = 10 // USDFC
+export const VALUE_PER_LEAF = 10 / 8192 // USDC (10 USDC / 8192 leaves)
+export const TOTAL_LOCKED = 10 // USDC
 
-// USDFC ERC20 token (Filecoin Calibration)
-export const USDFC_ADDRESS = process.env.NEXT_PUBLIC_USDFC || '0xb3042734b608a1B16e9e86B374A3f3e389B4cDf0'
+// USDC ERC20 token (Base Sepolia)
+export const USDFC_ADDRESS = process.env.NEXT_PUBLIC_USDC || '0x036CbD53842c5426634e7929541eC2318f3dCF7e'
 
 // Live mode config — set these in .env.local
 export const MERCHANT_WITHDRAW_BLOCKS = Number(process.env.NEXT_PUBLIC_MERCHANT_WITHDRAW_BLOCKS) || 100

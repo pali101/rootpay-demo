@@ -64,7 +64,7 @@ export default function WalletGate({ wallet, onEnterAs, onSimulated, onSimulated
           <div className="text-center space-y-1">
             <p className="font-mono text-sm text-[#E8E6DF]">Connect your wallet</p>
             <p className="font-mono text-[11px] text-[#6B6A65] leading-relaxed">
-              Connect to Filecoin Calibration<br />to run the live demo.
+              Connect to Base Sepolia<br />to run the live demo.
             </p>
           </div>
 
@@ -162,7 +162,7 @@ export default function WalletGate({ wallet, onEnterAs, onSimulated, onSimulated
         </div>
 
         <p className="font-mono text-[10px] text-[#6B6A65] text-center mt-5">
-          Filecoin Calibration testnet · Chain ID 314159
+          Base Sepolia testnet · Chain ID 84532
         </p>
       </motion.div>
     </div>
